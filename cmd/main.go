@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	testrover "github.com/gabriellasaro/test-rover"
+	"github.com/gabriellasaro/test-rover/plateau"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 	fileScan.Split(bufio.ScanLines)
 
 	fileScan.Scan()
-	plateau, err := testrover.NewPlateauByParse(fileScan.Text())
+	plateau, err := plateau.NewPlateauByParse(fileScan.Text())
 	if err != nil {
 		panic(err)
 	}

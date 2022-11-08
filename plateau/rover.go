@@ -1,17 +1,10 @@
-package testrover
+package plateau
 
 import (
 	"fmt"
 
 	"github.com/gabriellasaro/test-rover/coordinates"
 	"github.com/gabriellasaro/test-rover/direction"
-)
-
-type operationPosition uint8
-
-const (
-	opAddition operationPosition = iota
-	opSubtraction
 )
 
 type Rover interface {
