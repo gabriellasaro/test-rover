@@ -44,28 +44,44 @@ func (r *rover) isValid() error {
 	return nil
 }
 
+// normalizePosition considera que o rover não pode extrapolar o limite da borda
+func (r *rover) normalizePosition(xy int) {
+	if r.coordinates[xy] > r.plateau.upperRight[xy] {
+		r.coordinates[xy] = r.plateau.upperRight[xy]
+	} else if r.coordinates[xy] < r.plateau.lowerLeft[xy] {
+		r.coordinates[xy] = r.plateau.lowerLeft[xy]
+	}
+}
+
 func (r *rover) toNorth() {
 	r.coordinates[coordinates.Y]++
+	r.normalizePosition(coordinates.Y)
 }
 
 func (r *rover) toSouth() {
 	r.coordinates[coordinates.Y]--
+	r.normalizePosition(coordinates.Y)
+
 }
 
 func (r *rover) toEast() {
 	r.coordinates[coordinates.X]++
+	r.normalizePosition(coordinates.X)
 }
 
 func (r *rover) toWest() {
 	r.coordinates[coordinates.X]--
+	r.normalizePosition(coordinates.X)
 }
 
 func (r *rover) setNewPosition(d direction.Direction) {
 	r.position = r.position.ToDirection(d)
 }
 
-func (r *rover) toDirection(d direction.Direction) error {
-	r.setNewPosition(d)
+func (r *rover) move(d direction.Direction) {
+	if d.Operation() != 0 {
+		return
+	}
 
 	switch r.position {
 	case coordinates.North:
@@ -77,18 +93,24 @@ func (r *rover) toDirection(d direction.Direction) error {
 	case coordinates.West:
 		r.toWest()
 	}
+}
+
+func (r *rover) toDirection(d direction.Direction) error {
+	if err := d.IsValid(); err != nil {
+		return err
+	}
+
+	r.setNewPosition(d)
+	r.move(d)
 
 	return nil
 }
 
 func (r *rover) Commands(commands string) error {
 	for _, command := range commands {
-		direction := direction.Direction(command)
-		if err := direction.IsValid(); err != nil {
-			return err
-		}
-
-		if err := r.toDirection(direction); err != nil {
+		if err := r.toDirection(
+			direction.Direction(command),
+		); err != nil {
 			return err
 		}
 	}

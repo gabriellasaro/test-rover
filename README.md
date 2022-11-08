@@ -16,3 +16,6 @@ go run cmd/main.go data/input.txt
 ```
 go test ./...
 ```
+
+### Posição e direção
+Para direcionar o rover para esquerda (-1), direita (+1) e mover (0), usamos uma operação de soma. Considerando que norte, leste, sul, oeste são representados respectivamente por 0, 1, 2, 3. Assuminos também que -1 equivale a oeste e 4 a norte.
